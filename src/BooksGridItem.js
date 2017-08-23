@@ -5,8 +5,9 @@ class BooksGridItem extends Component {
         shelf: this.props.book.shelf || 'none'
     }
 
-    handleChangeShelf = (shelf) => {
+    handleChangeShelf = (id, shelf) => {
         this.setState({shelf})
+        this.props.changeShelf(id, shelf)
     }
 
     render() {
@@ -18,7 +19,7 @@ class BooksGridItem extends Component {
                         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.smallThumbnail}")` }}>
                         </div>
                         <div className="book-shelf-changer">
-                        <select value={this.state.shelf} onChange={(e) => {this.handleChangeShelf(e.target.value)}}>
+                        <select value={this.state.shelf} onChange={(e) => {this.handleChangeShelf(book.id,e.target.value)}}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>

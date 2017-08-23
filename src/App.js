@@ -15,12 +15,23 @@ class BooksApp extends React.Component {
       this.setState({books})
     })
   }
+
+  changeShelf = (id,shelf) => {
+    this.setState((state) => (
+      state.books.map((book) => {
+        if(book.id === id) {
+          book.shelf = shelf
+        }
+        return book
+      })
+    ))
+  }
   
   render() {
     return (
       <div className="app">
           <Route exact path="/" render={()=>(
-            <ListBooks books={this.state.books} />
+            <ListBooks books={this.state.books} changeShelf={this.changeShelf} />
           )} />
           <Route path="/search" component={SearchBooks} />
       </div>
