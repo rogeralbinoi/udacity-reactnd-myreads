@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
-import BooksGrid from './BooksGrid'
+import * as BooksAPI from '../BooksAPI'
+import BooksGrid from '../components/BooksGrid'
 
 class SearchBooks extends Component {
   state = {

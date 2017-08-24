@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BooksGridItem from './BooksGridItem'
+import BooksGridItem from '../components/BooksGridItem'
 const BooksGrid = props => {
   let { books, changeShelf } = props
   return (

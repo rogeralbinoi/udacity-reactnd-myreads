@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import BooksGrid from './BooksGrid'
+import BooksGrid from '../components/BooksGrid'
 
 class ListBooks extends Component {
   render() {
