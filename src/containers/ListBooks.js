@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import BooksGrid from '../components/BooksGrid'
+import PropTypes from 'prop-types'
 
 class ListBooks extends Component {
+  static propTypes = {
+    books: PropTypes.array,
+    changeShelf: PropTypes.func
+  }
+
   render() {
     const { books, changeShelf } = this.props
     const booksCurrentlyReading = books.filter(

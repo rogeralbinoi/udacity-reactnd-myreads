@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class BooksGridItem extends Component {
+  static propTypes = {
+    book: PropTypes.object
+  }
+
   state = {
     shelf: this.props.book.shelf || 'none'
   }

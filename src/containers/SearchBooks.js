@@ -2,8 +2,13 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from '../BooksAPI'
 import BooksGrid from '../components/BooksGrid'
+import PropTypes from 'prop-types'
 
 class SearchBooks extends Component {
+  static propTypes = {
+    changeShelf: PropTypes.func
+  }
+
   state = {
     query: '',
     books: []
