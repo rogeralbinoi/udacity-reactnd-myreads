@@ -19,9 +19,8 @@ class BooksApp extends React.Component {
   }
 
   changeShelf = (book, shelf) => {
-    console.log(book, shelf)
     BooksAPI.update(book, shelf).then(books => {
-      let newBooksShelf = [
+      let updatedBooksShelf = [
         ...books.currentlyReading.map(id => ({
           id,
           shelf: 'currentlyReading'
@@ -29,12 +28,16 @@ class BooksApp extends React.Component {
         ...books.read.map(id => ({ id, shelf: 'read' })),
         ...books.wantToRead.map(id => ({ id, shelf: 'wantToRead' }))
       ]
-      this.state.books.map(book => {
-        let bookShelf = newBooksShelf.find(bookShelf => {
-          return book.id === bookShelf.id
-        }).shelf
 
-        book.shelf = bookShelf
+      this.setState(state => {
+        return state.books.map(book => {
+          let bookShelf = updatedBooksShelf.find(bookShelf => {
+            return book.id === bookShelf.id
+          }).shelf
+
+          book.shelf = bookShelf
+          return book
+        })
       })
     })
   }
@@ -42,7 +45,9 @@ class BooksApp extends React.Component {
   search = debounce(query => {
     query &&
       BooksAPI.search(query).then(searchResults => {
-        this.setState({ searchResults })
+        this.setState(state => ({
+          searchResults: Object.assign(searchResults, state.books)
+        }))
       })
   }, 500)
 
