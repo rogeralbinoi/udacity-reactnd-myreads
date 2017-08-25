@@ -4,6 +4,7 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './containers/ListBooks'
 import SearchBooks from './containers/SearchBooks'
+import debounce from 'debounce'
 
 class BooksApp extends React.Component {
   state = {
@@ -27,6 +28,13 @@ class BooksApp extends React.Component {
     )
   }
 
+  search = debounce(query => {
+    query &&
+      BooksAPI.search(query).then(books => {
+        this.setState({ books })
+      })
+  }, 500)
+
   render() {
     return (
       <div className="app">
@@ -41,8 +49,8 @@ class BooksApp extends React.Component {
         />
         <Route
           path="/search"
-          component={SearchBooks}
-          changeShelf={this.changeShelf}
+          render={() =>
+            <SearchBooks changeShelf={this.changeShelf} search={this.search} />}
         />
       </div>
     )

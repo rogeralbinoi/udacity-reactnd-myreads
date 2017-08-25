@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as BooksAPI from '../BooksAPI'
 import BooksGrid from '../components/BooksGrid'
 import PropTypes from 'prop-types'
 
 class SearchBooks extends Component {
   static propTypes = {
-    changeShelf: PropTypes.func
+    changeShelf: PropTypes.func,
+    search: PropTypes.func
   }
 
   state = {
@@ -14,15 +14,9 @@ class SearchBooks extends Component {
     books: []
   }
 
-  search = query => {
-    BooksAPI.search(query).then(books => {
-      this.setState({ books })
-    })
-  }
-
   handdleChangeSearch = query => {
     this.setState(() => {
-      this.search(query)
+      this.props.search(query)
       return { query }
     })
   }
