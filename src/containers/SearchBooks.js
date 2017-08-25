@@ -43,7 +43,10 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <BooksGrid changeShelf={changeShelf} books={this.state.books} />
+          <BooksGrid
+            changeShelf={changeShelf}
+            books={this.props.searchResults}
+          />
         </div>
       </div>
     )

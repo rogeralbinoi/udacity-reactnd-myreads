@@ -33,7 +33,7 @@ class BooksGridItem extends Component {
               <select
                 value={this.state.shelf}
                 onChange={e => {
-                  this.handleChangeShelf(book.id, e.target.value)
+                  this.handleChangeShelf(book, e.target.value)
                 }}
               >
                 <option value="none" disabled>
