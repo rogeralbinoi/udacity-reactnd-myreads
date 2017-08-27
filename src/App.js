@@ -20,7 +20,7 @@ class BooksApp extends React.Component {
 
   changeShelf = (book, shelf) => {
     BooksAPI.update(book, shelf).then(books => {
-      let updatedBooksShelf = [
+      let updatedBooks = [
         ...books.currentlyReading.map(id => ({
           id,
           shelf: 'currentlyReading'
@@ -28,28 +28,49 @@ class BooksApp extends React.Component {
         ...books.read.map(id => ({ id, shelf: 'read' })),
         ...books.wantToRead.map(id => ({ id, shelf: 'wantToRead' }))
       ]
-
-      this.setState(state => {
-        return state.books.map(book => {
-          let bookShelf = updatedBooksShelf.find(bookShelf => {
-            return book.id === bookShelf.id
-          }).shelf
-
-          book.shelf = bookShelf
+      
+      this.setState((state) => {
+        let books = state.books.filter(book => {
+          return (updatedBooks.find(updatedBook => updatedBook.id === book.id) ? true : false)
+        }).map(book => {
+          book.shelf = updatedBooks.find(updatedBook => updatedBook.id === book.id).shelf
           return book
         })
+        
+        updatedBooks.forEach(updatedBook => {
+          let bookMatch = state.books.find(book => {
+            return book.id === updatedBook.id
+          }) ? true : false
+          if(!bookMatch) {
+            BooksAPI.get(updatedBook.id).then(book => {
+              this.setState(state => {
+                return {books: state.books.concat(book)}
+              })
+            })
+          }
+        })
+        
+        return {books}
       })
+      
     })
   }
 
   search = debounce(query => {
     query &&
       BooksAPI.search(query).then(searchResults => {
-        this.setState(state => ({
-          searchResults: Object.assign(searchResults, state.books)
-        }))
+        this.setState((state)=> {
+          let results = searchResults.map((searchBook)=> {
+            return state.books.find(book => book.id === searchBook.id) || searchBook
+          })
+          return {searchResults: results}
+        })
       })
   }, 500)
+  
+  clearSearchResults = () => {
+    this.setState({searchResults: []})
+  }
 
   render() {
     let { books, searchResults } = this.state
@@ -67,6 +88,7 @@ class BooksApp extends React.Component {
             <SearchBooks
               changeShelf={this.changeShelf}
               search={this.search}
+              clearSearchResults={this.clearSearchResults}
               searchResults={searchResults}
             />}
         />

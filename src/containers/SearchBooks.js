@@ -6,7 +6,12 @@ import PropTypes from 'prop-types'
 class SearchBooks extends Component {
   static propTypes = {
     changeShelf: PropTypes.func,
-    search: PropTypes.func
+    search: PropTypes.func,
+    clearSearchResults: PropTypes.func
+  }
+  
+  componentWillMount() {
+    this.props.clearSearchResults()
   }
 
   state = {
