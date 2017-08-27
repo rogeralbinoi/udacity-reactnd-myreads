@@ -27,7 +27,7 @@ class SearchBooks extends Component {
   }
 
   render() {
-    let { changeShelf } = this.props
+    let { changeShelf, loadingSearch, emptyQuery} = this.props
     let { query } = this.state
     return (
       <div className="search-books">
@@ -48,10 +48,14 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <BooksGrid
+          {loadingSearch ? (<div>Loading...</div>) :
+          (<BooksGrid
             changeShelf={changeShelf}
             books={this.props.searchResults}
-          />
+          />)}
+          {emptyQuery && (
+            <div>Nothing here :(</div>
+          )}
         </div>
       </div>
     )

@@ -9,16 +9,21 @@ import debounce from 'debounce'
 class BooksApp extends React.Component {
   state = {
     books: [],
-    searchResults: []
+    searchResults: [],
+    loadingBookList: false,
+    loadingSearch: false,
+    emptyQuery: false
   }
 
   componentDidMount() {
+    this.setState({loadingBookList: true})
     BooksAPI.getAll().then(books => {
-      this.setState({ books })
+      this.setState({ books, loadingBookList: false })
     })
   }
 
   changeShelf = (book, shelf) => {
+    this.setState({loadingBookList:true})
     BooksAPI.update(book, shelf).then(books => {
       let updatedBooks = [
         ...books.currentlyReading.map(id => ({
@@ -42,30 +47,39 @@ class BooksApp extends React.Component {
             return book.id === updatedBook.id
           }) ? true : false
           if(!bookMatch) {
+            this.setState({loadingBookList:true})
             BooksAPI.get(updatedBook.id).then(book => {
               this.setState(state => {
-                return {books: state.books.concat(book)}
+                return {books: state.books.concat(book), loadingBookList:false}
               })
             })
           }
         })
         
-        return {books}
+        return {books,loadingBookList:false}
       })
       
     })
   }
 
   search = debounce(query => {
-    query &&
+    this.setState({loadingSearch: true, emptyQuery: false})
+    if(query) {
       BooksAPI.search(query).then(searchResults => {
-        this.setState((state)=> {
+        if(searchResults.error === 'empty query') {
+          this.setState({searchResults: [],loadingSearch: false, emptyQuery: true})
+          return
+        }
+        this.setState((state) => {
           let results = searchResults.map((searchBook)=> {
             return state.books.find(book => book.id === searchBook.id) || searchBook
           })
-          return {searchResults: results}
+          return {searchResults: results, loadingSearch:false}
         })
       })
+    }else {
+      this.setState({searchResults: [],loadingSearch: false})
+    }
   }, 500)
   
   clearSearchResults = () => {
@@ -73,14 +87,14 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    let { books, searchResults } = this.state
+    let { books, searchResults, loadingBookList, loadingSearch, emptyQuery } = this.state
     return (
       <div className="app">
         <Route
           exact
           path="/"
           render={() =>
-            <ListBooks books={books} changeShelf={this.changeShelf} />}
+            <ListBooks books={books} changeShelf={this.changeShelf} loadingBookList={loadingBookList} />}
         />
         <Route
           path="/search"
@@ -90,6 +104,8 @@ class BooksApp extends React.Component {
               search={this.search}
               clearSearchResults={this.clearSearchResults}
               searchResults={searchResults}
+              loadingSearch={loadingSearch}
+              emptyQuery={emptyQuery}
             />}
         />
       </div>
