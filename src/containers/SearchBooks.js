@@ -9,7 +9,7 @@ class SearchBooks extends Component {
     search: PropTypes.func,
     clearSearchResults: PropTypes.func
   }
-  
+
   componentWillMount() {
     this.props.clearSearchResults()
   }
@@ -27,7 +27,7 @@ class SearchBooks extends Component {
   }
 
   render() {
-    let { changeShelf, loadingSearch, emptyQuery} = this.props
+    let { changeShelf, loadingSearch, emptyQuery } = this.props
     let { query } = this.state
     return (
       <div className="search-books">
@@ -48,14 +48,13 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          {loadingSearch ? (<div>Loading...</div>) :
-          (<BooksGrid
-            changeShelf={changeShelf}
-            books={this.props.searchResults}
-          />)}
-          {emptyQuery && (
-            <div>Nothing here :(</div>
-          )}
+          {loadingSearch
+            ? <div>Loading...</div>
+            : <BooksGrid
+                changeShelf={changeShelf}
+                books={this.props.searchResults}
+              />}
+          {emptyQuery && <div>Nothing here :(</div>}
         </div>
       </div>
     )

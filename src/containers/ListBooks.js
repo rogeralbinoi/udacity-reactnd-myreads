@@ -26,22 +26,31 @@ class ListBooks extends Component {
             <div className="bookshelf">
               <h2 className="bookshelf-title">Currently Reading</h2>
               <div className="bookshelf-books">
-                {loadingBookList ? (<div>Loading...</div>) : (<BooksGrid
-                  changeShelf={changeShelf}
-                  books={booksCurrentlyReading}
-                />)}
+                {loadingBookList
+                  ? <div>Loading...</div>
+                  : <BooksGrid
+                      changeShelf={changeShelf}
+                      books={booksCurrentlyReading}
+                    />}
               </div>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Want to Read</h2>
               <div className="bookshelf-books">
-                {loadingBookList ? (<div>Loading...</div>) : (<BooksGrid changeShelf={changeShelf} books={booksWantToRead} />)}
+                {loadingBookList
+                  ? <div>Loading...</div>
+                  : <BooksGrid
+                      changeShelf={changeShelf}
+                      books={booksWantToRead}
+                    />}
               </div>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Read</h2>
               <div className="bookshelf-books">
-                {loadingBookList ? (<div>Loading...</div>) : (<BooksGrid changeShelf={changeShelf} books={booksRead} />)}
+                {loadingBookList
+                  ? <div>Loading...</div>
+                  : <BooksGrid changeShelf={changeShelf} books={booksRead} />}
               </div>
             </div>
           </div>

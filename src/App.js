@@ -16,14 +16,14 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({loadingBookList: true})
+    this.setState({ loadingBookList: true })
     BooksAPI.getAll().then(books => {
       this.setState({ books, loadingBookList: false })
     })
   }
 
   changeShelf = (book, shelf) => {
-    this.setState({loadingBookList:true})
+    this.setState({ loadingBookList: true })
     BooksAPI.update(book, shelf).then(books => {
       let updatedBooks = [
         ...books.currentlyReading.map(id => ({
@@ -33,68 +33,94 @@ class BooksApp extends React.Component {
         ...books.read.map(id => ({ id, shelf: 'read' })),
         ...books.wantToRead.map(id => ({ id, shelf: 'wantToRead' }))
       ]
-      
-      this.setState((state) => {
-        let books = state.books.filter(book => {
-          return (updatedBooks.find(updatedBook => updatedBook.id === book.id) ? true : false)
-        }).map(book => {
-          book.shelf = updatedBooks.find(updatedBook => updatedBook.id === book.id).shelf
-          return book
-        })
-        
+
+      this.setState(state => {
+        let books = state.books
+          .filter(book => {
+            return updatedBooks.find(updatedBook => updatedBook.id === book.id)
+              ? true
+              : false
+          })
+          .map(book => {
+            book.shelf = updatedBooks.find(
+              updatedBook => updatedBook.id === book.id
+            ).shelf
+            return book
+          })
+
         updatedBooks.forEach(updatedBook => {
           let bookMatch = state.books.find(book => {
             return book.id === updatedBook.id
-          }) ? true : false
-          if(!bookMatch) {
-            this.setState({loadingBookList:true})
+          })
+            ? true
+            : false
+          if (!bookMatch) {
+            this.setState({ loadingBookList: true })
             BooksAPI.get(updatedBook.id).then(book => {
               this.setState(state => {
-                return {books: state.books.concat(book), loadingBookList:false}
+                return {
+                  books: state.books.concat(book),
+                  loadingBookList: false
+                }
               })
             })
           }
         })
-        
-        return {books,loadingBookList:false}
+
+        return { books, loadingBookList: false }
       })
-      
     })
   }
 
   search = debounce(query => {
-    this.setState({loadingSearch: true, emptyQuery: false})
-    if(query) {
+    this.setState({ loadingSearch: true, emptyQuery: false })
+    if (query) {
       BooksAPI.search(query).then(searchResults => {
-        if(searchResults.error === 'empty query') {
-          this.setState({searchResults: [],loadingSearch: false, emptyQuery: true})
+        if (searchResults.error === 'empty query') {
+          this.setState({
+            searchResults: [],
+            loadingSearch: false,
+            emptyQuery: true
+          })
           return
         }
-        this.setState((state) => {
-          let results = searchResults.map((searchBook)=> {
-            return state.books.find(book => book.id === searchBook.id) || searchBook
+        this.setState(state => {
+          let results = searchResults.map(searchBook => {
+            return (
+              state.books.find(book => book.id === searchBook.id) || searchBook
+            )
           })
-          return {searchResults: results, loadingSearch:false}
+          return { searchResults: results, loadingSearch: false }
         })
       })
-    }else {
-      this.setState({searchResults: [],loadingSearch: false})
+    } else {
+      this.setState({ searchResults: [], loadingSearch: false })
     }
   }, 500)
-  
+
   clearSearchResults = () => {
-    this.setState({searchResults: []})
+    this.setState({ searchResults: [] })
   }
 
   render() {
-    let { books, searchResults, loadingBookList, loadingSearch, emptyQuery } = this.state
+    let {
+      books,
+      searchResults,
+      loadingBookList,
+      loadingSearch,
+      emptyQuery
+    } = this.state
     return (
       <div className="app">
         <Route
           exact
           path="/"
           render={() =>
-            <ListBooks books={books} changeShelf={this.changeShelf} loadingBookList={loadingBookList} />}
+            <ListBooks
+              books={books}
+              changeShelf={this.changeShelf}
+              loadingBookList={loadingBookList}
+            />}
         />
         <Route
           path="/search"
